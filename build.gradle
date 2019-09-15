@@ -2,10 +2,18 @@ plugins {
     id 'java'
 }
 
+def timestamp = new Date().format('yyyyMMdd_1')
+
 group 'com.brunoshiroma'
-version '1.0-SNAPSHOT'
+version '0.1.0-SNAPSHOT-' + timestamp
 
 sourceCompatibility = 12
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.brunoshiroma.benchtool.Main'
+    }
+}
 
 repositories {
     mavenCentral()
