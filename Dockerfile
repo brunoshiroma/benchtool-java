@@ -4,8 +4,6 @@ COPY . /bench
 
 WORKDIR /bench
 
-RUN ["/bin/sh", "./gradlew", "clean", "build"]
+RUN ["/bin/sh", "./gradlew", "clean", "dockerBuild"]
 
-COPY ./build/libs/*.jar ./benchtool-java.jar
-
-ENTRYPOINT ["java", "-jar", "benchtool-java.jar"]
+ENTRYPOINT ["java", "-jar", "buid/libs/benchtool-java.jar"]

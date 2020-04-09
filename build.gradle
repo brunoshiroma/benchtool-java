@@ -15,6 +15,16 @@ jar {
     }
 }
 
+task dockerBuild(type: Jar) {
+	version = ''
+    baseName = 'benchtool'
+	manifest {
+        attributes 'Main-Class': 'com.brunoshiroma.benchtool.Main'
+		attributes 'Version': project.version
+    }
+	with jar
+}
+
 repositories {
     mavenCentral()
 }
