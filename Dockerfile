@@ -1,9 +1,13 @@
-FROM openjdk:14
+FROM openjdk:14 as buildbase
 
 COPY . /bench
 
 WORKDIR /bench
 
-RUN ["/bin/sh", "./gradlew", "clean", "dockerBuild"]
+RUN ./gradlew clean
 
-ENTRYPOINT ["java", "-jar", "build/libs/benchtool-java.jar"]
+FROM buildbase
+
+RUN ["/bin/sh", "./gradlew", "dockerBuild"]
+
+ENTRYPOINT ["java", "-jar", "build/libs/benchtool.jar"]
