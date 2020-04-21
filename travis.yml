@@ -1,0 +1,18 @@
+dist: bionic
+
+arch:
+  - amd64
+  - arm64
+
+jobs:
+  include:
+    - os: linux
+      arch: amd64
+      services:
+        - docker
+      script: docker build .
+    - os: linux
+        arch: arm64
+        services:
+          - docker
+        script: docker build .
