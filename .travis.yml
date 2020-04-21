@@ -1,7 +1,5 @@
 dist: bionic
 
-language: java
-
 jobs:
   include:
     - os: linux
