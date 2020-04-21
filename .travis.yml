@@ -10,7 +10,7 @@ jobs:
         - docker
       script: docker build .
     - os: linux
-        arch: arm64
-        services:
-          - docker
-        script: docker build .
+      arch: arm64
+      services:
+        - docker
+      script: docker build .
