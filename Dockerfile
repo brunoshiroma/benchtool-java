@@ -1,4 +1,4 @@
-FROM openjdk:14 as buildbase
+FROM openjdk:11 as buildbase
 
 COPY . /bench
 
