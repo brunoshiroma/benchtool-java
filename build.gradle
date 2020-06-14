@@ -7,7 +7,7 @@ def timestamp = new Date().format('yyyyMMdd_1')
 group 'com.brunoshiroma'
 version '0.1.0-SNAPSHOT-' + timestamp
 
-sourceCompatibility = 11
+sourceCompatibility = 14
 
 jar {
     manifest {
