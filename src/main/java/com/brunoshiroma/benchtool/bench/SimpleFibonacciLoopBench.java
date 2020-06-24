@@ -1,6 +1,5 @@
 package com.brunoshiroma.benchtool.bench;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public class SimpleFibonacciLoopBench implements Bench {
@@ -9,9 +8,9 @@ public class SimpleFibonacciLoopBench implements Bench {
 
         final int loopCount = Integer.parseInt(args[0]);
 
-        BigDecimal current = new BigDecimal(0);
-        BigDecimal next = new BigDecimal(1);
-        BigDecimal result = new BigDecimal(0);
+        BigInteger current = BigInteger.ZERO;
+        BigInteger next = BigInteger.ONE;
+        BigInteger result = BigInteger.ZERO;
 
         for(int i = 1; i < loopCount; i++){
             result = current.add(next);

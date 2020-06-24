@@ -9,7 +9,7 @@ public class SimpleFibonacciRecursiveBench implements Bench {
 
         long maxInteration = Long.parseLong(args[0]);
 
-        BigInteger result =calculateNext(BigInteger.valueOf(0), BigInteger.valueOf(1), maxInteration);
+        BigInteger result =calculateNext(BigInteger.ZERO, BigInteger.ONE, maxInteration);
 
         return new BenchResult(result);
     }
