@@ -4,7 +4,17 @@ WORKDIR /bench
 
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
 RUN apk update
-run apk add openjdk14-jdk
+RUN apk add openjdk14-jdk
+RUN apk add openjdk14-jmods
+
+RUN /usr/lib/jvm/java-14-openjdk/bin/jlink \
+        --add-modules java.base \
+        --verbose \
+        --strip-java-debug-attributes \
+        --compress 2 \
+        --no-header-files \
+        --no-man-pages \
+        --output /opt/jre-minimal
 
 COPY gradle/ ./gradle
 COPY gradlew .
@@ -19,9 +29,10 @@ FROM alpine:edge as runtime
 
 WORKDIR /bench
 
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
-RUN apk update
-run apk add openjdk14-jre-headless
+#https://medium.com/criciumadev/create-a-cloud-native-image-using-java-modules-a670be616b29
+COPY --from=buildbase /opt/jre-minimal /opt/jre-minimal
+ENV LANG=C.UTF-8 \
+    PATH=${PATH}:/opt/jre-minimal/bin
 
 COPY --from=buildbase /bench/build/libs/benchtool.jar .
 

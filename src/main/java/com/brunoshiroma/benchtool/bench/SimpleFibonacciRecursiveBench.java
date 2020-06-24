@@ -1,6 +1,6 @@
 package com.brunoshiroma.benchtool.bench;
 
-import java.math.BigDecimal;
+import java.math.BigInteger;
 
 public class SimpleFibonacciRecursiveBench implements Bench {
 
@@ -9,16 +9,16 @@ public class SimpleFibonacciRecursiveBench implements Bench {
 
         long maxInteration = Long.parseLong(args[0]);
 
-        BigDecimal result =calculateNext(BigDecimal.valueOf(0), BigDecimal.valueOf(1), maxInteration);
+        BigInteger result =calculateNext(BigInteger.valueOf(0), BigInteger.valueOf(1), maxInteration);
 
         return new BenchResult(result);
     }
 
-    private BigDecimal calculateNext(BigDecimal previous, BigDecimal current, long maxInterations){
+    private BigInteger calculateNext(BigInteger previous, BigInteger current, long maxInterations){
         return calculateNext(previous, current, maxInterations, 1);
     }
 
-    private BigDecimal calculateNext(BigDecimal previous, BigDecimal current, long maxInterations, long currentInteration){
+    private BigInteger calculateNext(BigInteger previous, BigInteger current, long maxInterations, long currentInteration){
 
         ++currentInteration;
 

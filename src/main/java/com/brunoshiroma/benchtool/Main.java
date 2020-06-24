@@ -2,7 +2,7 @@ package com.brunoshiroma.benchtool;
 
 import com.brunoshiroma.benchtool.bench.*;
 
-import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +14,7 @@ public class Main {
         Bench bench = null;
         String nElementCount = null;
         int loopCount = 5;
-        List<BenchResult<BigDecimal>> results = new ArrayList<>();
+        List<BenchResult<BigInteger>> results = new ArrayList<>();
 
         if(args.length >= 2){
             benchType = BenchType.fromIntValue( Integer.parseInt(args[0]) );
@@ -53,7 +53,7 @@ public class Main {
 
         final long averageMs = totalRunningMs / loopCount;
 
-        BigDecimal rawResult = results.get(0).result();
+        BigInteger rawResult = results.get(0).result();
         final boolean resultsOk = results.stream().allMatch( (b) -> b.result().equals(rawResult));
         if(!resultsOk){
             System.out.println("All results are not ok =,(");
