@@ -20,10 +20,10 @@ COPY gradle/ ./gradle
 COPY gradlew .
 COPY *.gradle ./
 
-RUN ./gradlew clean
+RUN ./gradlew clean --no-daemon
 
 COPY src/ ./src
-RUN ["/bin/sh", "./gradlew", "dockerBuild"]
+RUN ["/bin/sh", "./gradlew", "dockerBuild", "--no-daemon"]
 
 FROM alpine:edge as runtime
 
