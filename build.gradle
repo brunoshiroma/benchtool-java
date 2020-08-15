@@ -1,13 +1,15 @@
 plugins {
     id 'java'
+    id "com.jfrog.bintray" version "1.8.5"
+    id 'maven-publish'
 }
 
 def timestamp = new Date().format('yyyyMMdd_1')
 
 group 'com.brunoshiroma'
-version '0.1.0-SNAPSHOT-' + timestamp
+version '0.1.2'
 
-sourceCompatibility = 14
+sourceCompatibility = 7
 
 jar {
     manifest {
@@ -27,8 +29,91 @@ task dockerBuild(type: Jar) {
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+javadoc.failOnError = false
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+
+artifacts {
+    archives sourcesJar, javadocJar
+}
+
+// Create the pom configuration:
+def pomConfig = {
+    licenses {
+        license {
+            name "MIT"
+            url "https://opensource.org/licenses/MIT"
+            distribution "repo"
+        }
+    }
+    developers {
+        developer {
+            id "brunoshiroma"
+            name "Bruno Shiroma"
+            email "bruoshiroma@gmail.com"
+        }
+    }
+
+    scm {
+        url "https://github.com/brunoshiroma/benchtool-java.git"
+    }
+}
+
+publishing {
+    publications {
+        bintrayPublication(MavenPublication) {
+            from components.java
+
+            artifact sourcesJar
+            artifact javadocJar
+
+            groupId 'com.brunoshiroma'
+            artifactId 'benchtool-java'
+            version project.version
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'Benchtool Java')
+                root.appendNode('name', 'benchtool-java')
+                root.appendNode('url', 'https://github.com/bruoshiroma/benchtool-java')
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key =  System.getenv('BINTRAY_API_KEY')
+
+    //configurations = ['archives']
+    publications = ['bintrayPublication']
+
+    dryRun = false
+    publish = true
+    pkg {
+        repo = 'benchtool-java'
+        name = 'benchtool-java'
+        licenses = ['MIT']
+        vcsUrl = 'https://github.com/brunoshiroma/benchtool-java.git'
+        version {
+            name = project.version
+            desc = 'benchtool-java'
+            vcsTag = project.version
+        }
+    }
 }

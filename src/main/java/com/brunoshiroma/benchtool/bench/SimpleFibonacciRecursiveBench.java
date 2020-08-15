@@ -2,7 +2,7 @@ package com.brunoshiroma.benchtool.bench;
 
 import java.math.BigInteger;
 
-public class SimpleFibonacciRecursiveBench implements Bench {
+public class SimpleFibonacciRecursiveBench extends Bench {
 
     @Override
     public BenchResult doBenchmark(String[] args) {
@@ -22,7 +22,7 @@ public class SimpleFibonacciRecursiveBench implements Bench {
 
         ++currentInteration;
 
-         var result = previous.add(current);
+        BigInteger result = previous.add(current);
 
         if(currentInteration == maxInterations){
             return result;

@@ -1,17 +1,17 @@
 package com.brunoshiroma.benchtool.bench;
 
-public interface Bench {
+public abstract class Bench {
 
-    default BenchResult run(String  ...args){
-        var init = System.currentTimeMillis();
-        var result = doBenchmark(args);
-        var end = System.currentTimeMillis();
+    public BenchResult run(String  ...args){
+        long init = System.currentTimeMillis();
+        BenchResult result = doBenchmark(args);
+        long end = System.currentTimeMillis();
 
         result.setRunningMilliseconds(end - init);
 
         return result;
     }
 
-    BenchResult doBenchmark(String ...args);
+    public abstract BenchResult doBenchmark(String ...args);
 
 }

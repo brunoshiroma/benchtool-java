@@ -41,24 +41,30 @@ public class Main {
         }
 
         for(int i = 0; i < loopCount; i++){
-            var result = bench.run(nElementCount);
+            BenchResult result = bench.run(nElementCount);
             results.add(result);
         }
 
-
-        final long totalRunningMs = results
-                .stream()
-                .mapToLong( (b) ->  b.getRunningMilliseconds() )
-                .sum();
-
-        final long averageMs = totalRunningMs / loopCount;
-
         BigInteger rawResult = results.get(0).result();
-        final boolean resultsOk = results.stream().allMatch( (b) -> b.result().equals(rawResult));
+
+        long totalRunningMs = 0;
+        boolean resultsOk = true;
+        for(BenchResult result : results){
+            totalRunningMs += result.getRunningMilliseconds();
+
+            BigInteger bigIntegerResult = (BigInteger) result.result();
+            if(!rawResult.equals(bigIntegerResult) ){
+                resultsOk = false;
+                break;
+            }
+
+        }
         if(!resultsOk){
             System.out.println("All results are not ok =,(");
             System.exit(1);
         }
+
+        long averageMs = totalRunningMs / loopCount;
 
         System.out.println(String.format("%d %s", averageMs, rawResult));
     }

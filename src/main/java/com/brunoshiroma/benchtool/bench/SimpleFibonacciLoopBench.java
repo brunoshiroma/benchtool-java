@@ -2,7 +2,7 @@ package com.brunoshiroma.benchtool.bench;
 
 import java.math.BigInteger;
 
-public class SimpleFibonacciLoopBench implements Bench {
+public class SimpleFibonacciLoopBench extends Bench {
     @Override
     public BenchResult doBenchmark(String... args) {
 
