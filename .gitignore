@@ -77,3 +77,8 @@ fabric.properties
 .gradle
 build
 local.gradle
+
+.vscode/
+.classpath
+.project
+.settings

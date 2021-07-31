@@ -1,39 +1,24 @@
-FROM alpine:edge as buildbase
+FROM ghcr.io/graalvm/graalvm-ce:ol7 as buildbase
 
 WORKDIR /bench
 
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
-RUN apk update
-RUN apk add openjdk14-jdk
-RUN apk add openjdk14-jmods
-
-RUN /usr/lib/jvm/java-14-openjdk/bin/jlink \
-        --add-modules java.base \
-        --verbose \
-        --strip-java-debug-attributes \
-        --compress 2 \
-        --no-header-files \
-        --no-man-pages \
-        --output /opt/jre-minimal
+RUN gu install native-image
 
 COPY gradle/ ./gradle
 COPY gradlew .
 COPY *.gradle ./
 
-RUN ./gradlew clean --no-daemon
+RUN chmod +x gradlew
+
+RUN ["/bin/sh", "./gradlew", "clean", "--no-daemon"]
 
 COPY src/ ./src
 RUN ["/bin/sh", "./gradlew", "dockerBuild", "--no-daemon"]
 
-FROM alpine:edge as runtime
+RUN native-image --static -jar /bench/build/libs/benchtool.jar benchtool_java
 
-WORKDIR /bench
+FROM scratch
 
-#https://medium.com/criciumadev/create-a-cloud-native-image-using-java-modules-a670be616b29
-COPY --from=buildbase /opt/jre-minimal /opt/jre-minimal
-ENV LANG=C.UTF-8 \
-    PATH=${PATH}:/opt/jre-minimal/bin
+COPY --from=buildbase /bench/benchtool_java /bench/benchtool_java
 
-COPY --from=buildbase /bench/build/libs/benchtool.jar .
-
-ENTRYPOINT ["java", "-jar", "benchtool.jar"]
+ENTRYPOINT [ "/bench/benchtool_java" ]
