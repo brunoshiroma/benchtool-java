@@ -1,42 +1,44 @@
-# Java Gradle CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-java/ for more details
-#
-version: 2
+version: 2.1
+
 jobs:
-  build:
-    docker:
-      # specify the version you desire here
-      - image: gradle:6.2.2-jdk13
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
-
-    working_directory: ~/repo
-
-    environment:
-      # Customize the JVM maximum heap limit
-      JVM_OPTS: -Xmx3200m
-      TERM: dumb
-
+  build-arm:
+    machine:
+      image: ubuntu-2004:202101-01
+    resource_class: arm.medium
     steps:
       - checkout
+      - run:  echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      - run: docker build -t brunoshiroma/benchtool-java:arm64-latest .
+      - run: docker push brunoshiroma/benchtool-java:arm64-latest
 
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "build.gradle" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
+  build-amd64:
+    machine:
+      image: ubuntu-2004:202101-01
+    resource_class: medium
+    steps:
+      - checkout
+      - run:  echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      - run: docker build -t brunoshiroma/benchtool-java:amd64-latest .
+      - run: docker push brunoshiroma/benchtool-java:amd64-latest
 
-      - run: gradle dependencies
+  push-multi-arch-meta:
+    machine:
+      image: ubuntu-2004:202101-01
+    resource_class: small
+    steps:
+      - run:  echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      - run: docker manifest create brunoshiroma/benchtool-java:latest brunoshiroma/benchtool-java:amd64-latest brunoshiroma/benchtool-java:arm64-latest
+      - run: docker manifest push brunoshiroma/benchtool-java:latest
 
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: v1-dependencies-{{ checksum "build.gradle" }}
-
-      # run tests!
-      - run: gradle test
+workflows:
+  build:
+    jobs:
+      - build-arm:
+          context: benchtool
+      - build-amd64:
+          context: benchtool
+      - push-multi-arch-meta:
+          context: benchtool
+          requires:
+            - build-arm
+            - build-amd64

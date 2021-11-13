@@ -1,24 +1,27 @@
-FROM ghcr.io/graalvm/graalvm-ce:ol7 as buildbase
+FROM eclipse-temurin:latest as build
 
 WORKDIR /bench
 
-RUN gu install native-image
+COPY . .
 
-COPY gradle/ ./gradle
-COPY gradlew .
-COPY *.gradle ./
+RUN ./gradlew build
 
-RUN chmod +x gradlew
+# Create a custom Java runtime
+RUN $JAVA_HOME/bin/jlink \
+         --add-modules java.base \
+         --strip-debug \
+         --no-man-pages \
+         --no-header-files \
+         --compress=2 \
+         --output /javaruntime
 
-RUN ["/bin/sh", "./gradlew", "clean", "--no-daemon"]
+# Define your base image
+FROM debian:buster-slim as runtime
+WORKDIR /bench
+ENV JAVA_HOME=/opt/java/openjdk
+ENV PATH "${JAVA_HOME}/bin:${PATH}"
+COPY --from=build /javaruntime $JAVA_HOME
 
-COPY src/ ./src
-RUN ["/bin/sh", "./gradlew", "dockerBuild", "--no-daemon"]
+COPY --from=build /bench/build/libs/benchtool-java*.jar /bench/benchtool-java.jar
 
-RUN native-image --static -jar /bench/build/libs/benchtool.jar benchtool_java
-
-FROM scratch
-
-COPY --from=buildbase /bench/benchtool_java /bench/benchtool_java
-
-ENTRYPOINT [ "/bench/benchtool_java" ]
+ENTRYPOINT [ "java", "-jar", "benchtool-java.jar" ]
