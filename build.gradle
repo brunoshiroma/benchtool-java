@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
-def timestamp = new Date().format('yyyyMMdd_1')
+def timestamp = new Date().format('yyyyMMdd_HHmmss_1')
 
 group 'com.brunoshiroma'
 version '0.1.0-SNAPSHOT-' + timestamp
