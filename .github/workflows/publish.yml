@@ -17,4 +17,7 @@ jobs:
       with:
         java-version: 17
     - name: Build with Gradle
+      env:
+        USERNAME: ${{ secrets.USERNAME }}
+        TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: ./gradlew publish
