@@ -1,6 +1,8 @@
 name: Java CI
 
-on: [push]
+on:
+  push:
+    tags: *
 
 jobs:
   build:
@@ -14,4 +16,4 @@ jobs:
       with:
         java-version: 17
     - name: Build with Gradle
-      run: ./gradlew assemble
+      run: ./gradlew publish

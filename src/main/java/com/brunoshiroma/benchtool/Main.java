@@ -29,8 +29,7 @@ public class Main {
             System.out.println("Usage java -cp . com.brunoshiroma.benchtool.Main 1 10 [5]");
             System.exit(-1);
         }
-
-
+        
         switch (benchType){
             case Recursive:
                 bench = new SimpleFibonacciRecursiveBench();
@@ -44,7 +43,6 @@ public class Main {
             var result = bench.run(nElementCount);
             results.add(result);
         }
-
 
         final long totalRunningMs = results
                 .stream()
