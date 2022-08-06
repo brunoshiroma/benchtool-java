@@ -10,6 +10,8 @@ jobs:
       - run:  echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - run: docker build -t brunoshiroma/benchtool-java:arm64-latest .
       - run: docker push brunoshiroma/benchtool-java:arm64-latest
+      - run: docker build -t brunoshiroma/benchtool-java-native:arm64-latest .
+      - run: docker push brunoshiroma/benchtool-java-native:arm64-latest
 
   build-amd64:
     machine:
@@ -20,6 +22,8 @@ jobs:
       - run:  echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - run: docker build -t brunoshiroma/benchtool-java:amd64-latest .
       - run: docker push brunoshiroma/benchtool-java:amd64-latest
+      - run: docker build -t brunoshiroma/benchtool-java-native:amd64-latest .
+      - run: docker push brunoshiroma/benchtool-java-native:amd64-latest
 
   push-multi-arch-meta:
     machine:
@@ -29,6 +33,8 @@ jobs:
       - run:  echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - run: docker manifest create brunoshiroma/benchtool-java:latest brunoshiroma/benchtool-java:amd64-latest brunoshiroma/benchtool-java:arm64-latest
       - run: docker manifest push brunoshiroma/benchtool-java:latest
+      - run: docker manifest create brunoshiroma/benchtool-java-native:latest brunoshiroma/benchtool-java-native:amd64-latest brunoshiroma/benchtool-java-native:arm64-latest
+      - run: docker manifest push brunoshiroma/benchtool-java-native:latest
 
 workflows:
   build:

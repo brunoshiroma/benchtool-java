@@ -1,4 +1,4 @@
-FROM eclipse-temurin:18-jdk-jammy as build
+FROM eclipse-temurin:17-jdk-jammy as build
 
 WORKDIR /bench
 
@@ -16,7 +16,7 @@ RUN $JAVA_HOME/bin/jlink \
          --output /javaruntime
 
 # Define your base image
-FROM eclipse-temurin:18-jre-focal as runtime
+FROM eclipse-temurin:17-jre-focal as runtime
 WORKDIR /bench
 ENV JAVA_HOME=/opt/java/openjdk
 ENV PATH "${JAVA_HOME}/bin:${PATH}"
