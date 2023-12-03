@@ -1,8 +1,6 @@
-FROM ghcr.io/graalvm/graalvm-ce:ol8-java17 as buildbase
+FROM ghcr.io/graalvm/native-image-community:21-muslib as buildbase
 
 WORKDIR /bench
-
-RUN gu install native-image
 
 COPY gradle/ ./gradle
 COPY gradlew .
@@ -17,9 +15,9 @@ RUN ["/bin/sh", "./gradlew", "clean", "--no-daemon"]
 COPY src/ ./src
 RUN ["/bin/sh", "./gradlew", "dockerBuild", "--no-daemon"]
 
-RUN native-image --static -jar /bench/build/libs/benchtool.jar benchtool_java
+RUN native-image --no-fallback --static --libc=musl  -jar build/libs/benchtool-java.jar
 
-FROM scratch
+FROM alpine
 
 COPY --from=buildbase /bench/benchtool_java /bench/benchtool_java
 
